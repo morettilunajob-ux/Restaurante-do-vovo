@@ -363,6 +363,13 @@
   /* ---------- Entrada dos blocos ao rolar ---------- */
 
   function observarEntrada() {
+    /* Quem pediu menos movimento no sistema não recebe a animação:
+       sem a classe, o CSS deixa tudo visível desde o início. */
+    var querMenosMovimento = window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (querMenosMovimento) return;
+
     /* Só esconde o que será revelado depois de garantir que há como
        revelar. Sem esta classe, o CSS deixa tudo visível. */
     document.documentElement.classList.add('js-anima');

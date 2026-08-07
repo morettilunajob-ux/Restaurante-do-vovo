@@ -600,5 +600,12 @@ section {
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
   }
-  .entra { opacity: 1; translate: none; }
+  /* Rede de segurança: o JS já evita armar a animação neste caso, mas
+     se a classe existir por qualquer motivo, o conteúdo continua
+     visível. Precisa vencer .js-anima .entra na especificidade. */
+  .js-anima .entra,
+  .js-anima .entra.visivel {
+    opacity: 1;
+    translate: none;
+  }
 }
