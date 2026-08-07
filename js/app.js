@@ -1,213 +1,371 @@
-// Função para calcular status aberto/fechado em São Paulo
-function calcularStatusAberto() {
-  const agora = new Date();
+/* ============================================================
+   RESTAURANTE DO VOVÓ — renderização e comportamento
+   Lê tudo de dados.js. Não há conteúdo escrito aqui.
+   ============================================================ */
 
-  // Converter para fuso de São Paulo
-  const formatter = new Intl.DateTimeFormat('pt-BR', {
-    timeZone: 'America/Sao_Paulo',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-    weekday: 'long'
-  });
+(function () {
+  'use strict';
 
-  const partes = formatter.formatToParts(agora);
-  const hora = parseInt(partes.find(p => p.type === 'hour').value);
-  const minuto = parseInt(partes.find(p => p.type === 'minute').value);
-  const diaSemana = partes.find(p => p.type === 'weekday').value;
+  var TZ = 'America/Sao_Paulo';
+  var DIA_INDICE = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
 
-  const agoras_minutos = hora * 60 + minuto;
-  const abre_minutos = 7 * 60; // 07:00
-  const fecha_minutos = 15 * 60; // 15:00
+  /* ---------- Utilidades ---------- */
 
-  // Domingo = fechado
-  if (diaSemana === 'domingo') {
+  function $(id) { return document.getElementById(id); }
+
+  function texto(el, valor) { if (el) el.textContent = valor; }
+
+  /* Hora atual no fuso de São Paulo — nunca o relógio do
+     visitante, que pode estar em outro fuso ou errado. */
+  function agoraEmSaoPaulo() {
+    var partes = new Intl.DateTimeFormat('en-US', {
+      timeZone: TZ,
+      weekday: 'short',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    }).formatToParts(new Date());
+
+    var mapa = {};
+    partes.forEach(function (p) { mapa[p.type] = p.value; });
+
+    var hora = parseInt(mapa.hour, 10);
+    if (hora === 24) hora = 0;              // meia-noite em alguns motores
+
     return {
-      aberto: false,
-      mensagem: 'Fechado · Abre segunda 7h',
-      hora_fechamento: null
+      dia: DIA_INDICE[mapa.weekday],        // 0 = domingo
+      minutos: hora * 60 + parseInt(mapa.minute, 10)
     };
   }
 
-  // Horário de operação
-  if (agoras_minutos >= abre_minutos && agoras_minutos < fecha_minutos) {
-    return {
-      aberto: true,
-      mensagem: `Aberto agora · Fecha ${hora + (minuto >= 30 ? 1 : 0)}h`,
-      hora_fechamento: 15 * 60
-    };
-  } else if (agoras_minutos < abre_minutos) {
-    return {
-      aberto: false,
-      mensagem: 'Fechado · Abre hoje 7h',
-      hora_fechamento: null
-    };
-  } else {
-    return {
-      aberto: false,
-      mensagem: 'Fechado · Abre amanhã 7h',
-      hora_fechamento: null
-    };
-  }
-}
-
-// Renderizar dados
-function renderizar() {
-  // Status
-  const status = calcularStatusAberto();
-  const statusEl = document.querySelector('header .status');
-  if (statusEl) {
-    statusEl.textContent = status.mensagem;
-    statusEl.className = 'status ' + (status.aberto ? 'aberto' : 'fechado');
+  /* dados.js lista de Segunda a Domingo; getDay() usa 0 = domingo */
+  function horarioDoDia(dia) {
+    return DADOS.horarios[dia === 0 ? 6 : dia - 1];
   }
 
-  // Cardápio
-  const cardapioEl = document.getElementById('cardapio-conteudo');
-  if (cardapioEl) {
-    let html = '';
-    for (const [chave, categoria] of Object.entries(DADOS.cardapio)) {
-      html += `
-        <div class="cardapio-categoria">
-          <h3>${categoria.titulo}</h3>
-          ${categoria.itens.map(item => `
-            <div class="cardapio-item">
-              <span class="cardapio-nome">${item.nome}</span>
-              <span class="cardapio-preco">R$ ${item.preco.toFixed(2).replace('.', ',')}</span>
-            </div>
-          `).join('')}
-        </div>
-      `;
+  function paraMinutos(hhmm) {
+    var p = hhmm.split(':');
+    return parseInt(p[0], 10) * 60 + parseInt(p[1], 10);
+  }
+
+  function humanizarHora(hhmm) {
+    var p = hhmm.split(':');
+    return p[1] === '00' ? p[0].replace(/^0/, '') + 'h'
+                         : p[0].replace(/^0/, '') + 'h' + p[1];
+  }
+
+  function humanizarDuracao(min) {
+    if (min < 60) return min + ' min';
+    var h = Math.floor(min / 60);
+    var m = min % 60;
+    return m === 0 ? h + 'h' : h + 'h' + (m < 10 ? '0' : '') + m;
+  }
+
+  /* ---------- Status aberto / fechado ---------- */
+
+  function calcularStatus() {
+    var agora = agoraEmSaoPaulo();
+    var hoje = horarioDoDia(agora.dia);
+
+    if (hoje && hoje.abre) {
+      var abre = paraMinutos(hoje.abre);
+      var fecha = paraMinutos(hoje.fecha);
+
+      if (agora.minutos >= abre && agora.minutos < fecha) {
+        var restante = fecha - agora.minutos;
+        return {
+          aberto: true,
+          texto: 'Aberto agora · fecha em ' + humanizarDuracao(restante)
+        };
+      }
+
+      if (agora.minutos < abre) {
+        return {
+          aberto: false,
+          texto: 'Fechado · abre hoje às ' + humanizarHora(hoje.abre)
+        };
+      }
     }
-    cardapioEl.innerHTML = html;
+
+    /* Fechado: procura o próximo dia com expediente */
+    for (var i = 1; i <= 7; i++) {
+      var proximo = horarioDoDia((agora.dia + i) % 7);
+      if (proximo && proximo.abre) {
+        var quando = i === 1 ? 'amanhã' : proximo.dia.toLowerCase();
+        return {
+          aberto: false,
+          texto: 'Fechado · abre ' + quando + ' às ' + humanizarHora(proximo.abre)
+        };
+      }
+    }
+
+    return { aberto: false, texto: 'Fechado' };
   }
 
-  // Avaliações
-  const avaliacoesEl = document.getElementById('avaliacoes-conteudo');
-  if (avaliacoesEl) {
-    avaliacoesEl.innerHTML = DADOS.avaliacoes.map(av => `
-      <div class="avaliacao-card">
-        <div class="rating-stars">${'★'.repeat(av.nota)}</div>
-        <p class="avaliacao-texto">"${av.texto}"</p>
-        <p class="avaliacao-autor">— ${av.autor}</p>
-      </div>
-    `).join('');
+  function pintarStatus() {
+    var s = calcularStatus();
+    var el = $('status');
+    if (!el) return;
+    texto($('status-texto'), s.texto);
+    el.className = 'status ' + (s.aberto ? 'status--aberto' : 'status--fechado');
   }
 
-  // Horários
-  const horariosEl = document.getElementById('horarios-conteudo');
-  if (horariosEl) {
-    const formatter = new Intl.DateTimeFormat('pt-BR', {
-      timeZone: 'America/Sao_Paulo',
-      weekday: 'long'
+  /* ---------- Links de contato ---------- */
+
+  function montarLinks() {
+    var tel = 'tel:+55' + DADOS.telefone.replace(/\D/g, '');
+    var zap = 'https://wa.me/' + DADOS.whatsapp +
+              '?text=' + encodeURIComponent(DADOS.whatsappMensagem);
+    var coord = DADOS.endereco.lat + ',' + DADOS.endereco.lng;
+
+    [['cta-telefone', tel], ['barra-telefone', tel], ['rodape-telefone', tel],
+     ['barra-whatsapp', zap], ['rodape-whatsapp', zap],
+     ['link-gmaps', 'https://www.google.com/maps/search/?api=1&query=' + coord],
+     ['link-waze', 'https://waze.com/ul?ll=' + coord + '&navigate=yes']
+    ].forEach(function (par) {
+      var el = $(par[0]);
+      if (el) el.href = par[1];
     });
-    const hoje = formatter.format(new Date()).toLowerCase();
 
-    let html = `<table class="horarios-tabela">
-      <thead>
-        <tr><th>Dia</th><th>Horário</th></tr>
-      </thead>
-      <tbody>`;
+    texto($('rodape-telefone'), DADOS.telefone);
+  }
 
-    DADOS.horarios.forEach(h => {
-      const isHoje = h.dia.toLowerCase() === hoje;
-      const horario = h.aberto === "FECHADO" ? "Fechado" : `${h.aberto} – ${h.fechado}`;
-      html += `
-        <tr ${isHoje ? 'class="hoje"' : ''}>
-          <td>${h.dia}</td>
-          <td>${horario}</td>
-        </tr>
-      `;
+  /* ---------- Assinatura ---------- */
+
+  function pintarAssinatura() {
+    var el = $('assinatura');
+    if (!el || !DADOS.assinatura) return;
+
+    /* Destaca a palavra "pimenta" sem usar innerHTML */
+    var partes = DADOS.assinatura.split(/(pimenta)/i);
+    partes.forEach(function (parte) {
+      if (/^pimenta$/i.test(parte)) {
+        var em = document.createElement('em');
+        em.textContent = parte;
+        el.appendChild(em);
+      } else if (parte) {
+        el.appendChild(document.createTextNode(parte));
+      }
     });
-
-    html += `</tbody></table>`;
-    horariosEl.innerHTML = html;
   }
 
-  // Links de contato
-  const whatsappLink = `https://wa.me/${DADOS.whatsapp}?text=Olá! Gostaria de saber mais sobre o Restaurante do Vovó.`;
-  const gmapsLink = `https://maps.google.com/?q=${DADOS.endereco.lat},${DADOS.endereco.lng}`;
-  const wazeLink = `https://waze.com/ul?ll=${DADOS.endereco.lat},${DADOS.endereco.lng}`;
+  /* ---------- Avaliações ---------- */
 
-  document.querySelectorAll('[data-href="whatsapp"]').forEach(el => {
-    el.href = whatsappLink;
-  });
+  function pintarAvaliacoes() {
+    var g = DADOS.avaliacaoGoogle;
 
-  document.querySelectorAll('[data-href="mapa"]').forEach(el => {
-    el.href = gmapsLink;
-  });
+    texto($('nota-valor'), g.nota.toFixed(1).replace('.', ','));
+    texto($('nota-estrelas'), '★★★★★');
+    texto($('nota-fonte'), g.total + ' avaliações no Google');
 
-  // Endereço no rodapé
-  const enderecoEl = document.getElementById('endereco-completo');
-  if (enderecoEl) {
-    enderecoEl.innerHTML = `
-      ${DADOS.endereco.rua}, ${DADOS.endereco.numero}<br>
-      ${DADOS.endereco.complemento}
-    `;
+    var alvo = $('depoimentos');
+    if (!alvo) return;
+
+    DADOS.avaliacoes.forEach(function (av) {
+      var fig = document.createElement('figure');
+      fig.className = 'depoimento entra';
+
+      var quote = document.createElement('blockquote');
+      quote.textContent = '“' + av.texto + '”';
+
+      var cap = document.createElement('figcaption');
+      cap.textContent = av.autor;
+
+      fig.appendChild(quote);
+      fig.appendChild(cap);
+      alvo.appendChild(fig);
+    });
   }
 
-  // Telefone no rodapé
-  const telefoneEl = document.getElementById('telefone');
-  if (telefoneEl) {
-    telefoneEl.href = `tel:${DADOS.telefone.replace(/\D/g, '')}`;
-    telefoneEl.textContent = DADOS.telefone;
+  /* ---------- Cardápio ---------- */
+
+  function pintarCardapio() {
+    var alvo = $('cardapio-conteudo');
+    if (!alvo) return;
+
+    /* Sem pratos reais: aviso honesto, não pratos inventados. */
+    if (!DADOS.cardapioPronto) {
+      var aviso = document.createElement('div');
+      aviso.className = 'aviso';
+
+      var p = document.createElement('p');
+      p.textContent = DADOS.cardapioAviso;
+
+      var btn = document.createElement('a');
+      btn.className = 'btn btn--contorno';
+      btn.href = 'tel:+55' + DADOS.telefone.replace(/\D/g, '');
+      btn.textContent = 'Ligar para ' + DADOS.telefone;
+
+      aviso.appendChild(p);
+      aviso.appendChild(btn);
+      alvo.appendChild(aviso);
+      return;
+    }
+
+    Object.keys(DADOS.cardapio).forEach(function (chave) {
+      var cat = DADOS.cardapio[chave];
+      if (!cat.itens.length) return;
+
+      var bloco = document.createElement('div');
+      bloco.className = 'categoria entra';
+
+      var titulo = document.createElement('h3');
+      titulo.className = 'categoria__titulo';
+      titulo.textContent = cat.titulo;
+      bloco.appendChild(titulo);
+
+      cat.itens.forEach(function (item) {
+        var prato = document.createElement('div');
+        prato.className = 'prato' + (item.destaque ? ' prato--destaque' : '');
+
+        var nome = document.createElement('p');
+        nome.className = 'prato__nome';
+        nome.textContent = item.nome;
+        prato.appendChild(nome);
+
+        /* Nested pricing: preço junto da descrição, sem "R$"
+           e sem coluna à direita. */
+        var desc = document.createElement('p');
+        desc.className = 'prato__descricao';
+        if (item.descricao) {
+          desc.appendChild(document.createTextNode(item.descricao + ' '));
+        }
+        var preco = document.createElement('span');
+        preco.className = 'prato__preco';
+        preco.textContent = item.preco.toFixed(2).replace('.', ',');
+        desc.appendChild(preco);
+        prato.appendChild(desc);
+
+        bloco.appendChild(prato);
+      });
+
+      alvo.appendChild(bloco);
+    });
   }
-}
 
-// Lazy-load Leaflet
-function inicializarMapa() {
-  const mapaEl = document.getElementById('mapa');
-  if (!mapaEl || mapaEl.dataset.carregado === 'true') return;
+  /* ---------- Horários ---------- */
 
-  mapaEl.dataset.carregado = 'true';
+  function pintarHorarios() {
+    var alvo = $('horarios-lista');
+    if (!alvo) return;
 
-  // Injetar Leaflet CSS
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = '/vendor/leaflet.css';
-  document.head.appendChild(link);
+    var hoje = agoraEmSaoPaulo().dia;
+    var nomeHoje = horarioDoDia(hoje).dia;
 
-  // Injetar Leaflet JS
-  const script = document.createElement('script');
-  script.src = '/vendor/leaflet.js';
-  script.onload = () => {
-    const mapa = L.map('mapa').setView(
-      [DADOS.endereco.lat, DADOS.endereco.lng],
-      16
-    );
+    DADOS.horarios.forEach(function (h) {
+      var linha = document.createElement('div');
+      linha.className = 'horario' +
+        (h.dia === nomeHoje ? ' horario--hoje' : '') +
+        (h.abre ? '' : ' horario--fechado');
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap',
-      maxZoom: 19
-    }).addTo(mapa);
+      var dia = document.createElement('span');
+      dia.className = 'horario__dia';
+      dia.textContent = h.dia;
 
-    L.marker([DADOS.endereco.lat, DADOS.endereco.lng])
-      .bindPopup(`<strong>${DADOS.nome}</strong><br>${DADOS.endereco.rua}`)
-      .addTo(mapa);
-  };
-  document.body.appendChild(script);
-}
+      var faixa = document.createElement('span');
+      faixa.textContent = h.abre
+        ? humanizarHora(h.abre) + ' – ' + humanizarHora(h.fecha)
+        : 'Fechado';
 
-// Observer para lazy-load do mapa
-const observador = new IntersectionObserver((entradas) => {
-  entradas.forEach(entrada => {
-    if (entrada.isIntersecting && entrada.target.id === 'mapa') {
-      inicializarMapa();
-      observador.unobserve(entrada.target);
+      linha.appendChild(dia);
+      linha.appendChild(faixa);
+      alvo.appendChild(linha);
+    });
+  }
+
+  /* ---------- Endereço ---------- */
+
+  function pintarEndereco() {
+    var e = DADOS.endereco;
+    var completo = e.rua + ', ' + e.numero;
+
+    var el = $('endereco');
+    if (el) {
+      el.appendChild(document.createTextNode(completo));
+      el.appendChild(document.createElement('br'));
+      el.appendChild(document.createTextNode(e.complemento));
+    }
+
+    texto($('rodape-endereco'), completo);
+  }
+
+  /* ---------- Mapa (Leaflet sob demanda) ---------- */
+
+  function carregarMapa() {
+    var alvo = $('mapa');
+    if (!alvo || alvo.dataset.pronto) return;
+    alvo.dataset.pronto = '1';
+
+    var css = document.createElement('link');
+    css.rel = 'stylesheet';
+    css.href = '/vendor/leaflet.css';
+    document.head.appendChild(css);
+
+    var js = document.createElement('script');
+    js.src = '/vendor/leaflet.js';
+    js.onload = function () {
+      var e = DADOS.endereco;
+      var mapa = L.map('mapa', { scrollWheelZoom: false }).setView([e.lat, e.lng], 16);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap',
+        maxZoom: 19
+      }).addTo(mapa);
+
+      L.marker([e.lat, e.lng]).addTo(mapa)
+        .bindPopup(DADOS.nome);
+    };
+    document.body.appendChild(js);
+  }
+
+  /* ---------- Entrada dos blocos ao rolar ---------- */
+
+  function observarEntrada() {
+    var alvos = document.querySelectorAll('.entra');
+
+    if (!('IntersectionObserver' in window)) {
+      alvos.forEach(function (el) { el.classList.add('visivel'); });
+      return;
+    }
+
+    var obs = new IntersectionObserver(function (entradas) {
+      entradas.forEach(function (e) {
+        if (e.isIntersecting) {
+          e.target.classList.add('visivel');
+          obs.unobserve(e.target);
+        }
+      });
+    }, { rootMargin: '0px 0px -10% 0px' });
+
+    alvos.forEach(function (el) { obs.observe(el); });
+  }
+
+  /* ---------- Início ---------- */
+
+  document.addEventListener('DOMContentLoaded', function () {
+    montarLinks();
+    pintarStatus();
+    pintarAssinatura();
+    pintarAvaliacoes();
+    pintarCardapio();
+    pintarHorarios();
+    pintarEndereco();
+    observarEntrada();
+
+    /* O status precisa continuar correto sem recarregar a página */
+    setInterval(pintarStatus, 60000);
+
+    /* Leaflet só entra quando a seção do mapa se aproxima (~140 KB) */
+    var mapa = $('mapa');
+    if (mapa && 'IntersectionObserver' in window) {
+      new IntersectionObserver(function (entradas, obs) {
+        if (entradas[0].isIntersecting) {
+          carregarMapa();
+          obs.disconnect();
+        }
+      }, { rootMargin: '300px' }).observe(mapa);
+    } else {
+      carregarMapa();
     }
   });
-}, { rootMargin: '100px' });
-
-// Iniciar
-document.addEventListener('DOMContentLoaded', () => {
-  renderizar();
-
-  const mapaEl = document.getElementById('mapa');
-  if (mapaEl) {
-    observador.observe(mapaEl);
-  }
-
-  // Atualizar status a cada minuto
-  setInterval(() => {
-    renderizar();
-  }, 60000);
-});
+})();

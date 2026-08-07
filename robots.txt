@@ -1,14 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://restaurantedovovo.com/sitemap.xml
-
-# Desbloquear crawlers de IA
-User-agent: GPTBot
-Allow: /
-
-User-agent: ChatGPT-User
-Allow: /
-
-User-agent: CCBot
-Allow: /
+Sitemap: https://restaurante-do-vovo.vercel.app/sitemap.xml

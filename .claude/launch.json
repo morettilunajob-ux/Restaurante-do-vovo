@@ -2,10 +2,10 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "vovo-site",
+      "name": "vovo-v2",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["http-server", "-p", "5555"],
-      "port": 5555
+      "runtimeArgs": ["http-server", ".", "-p", "4321", "-c-1"],
+      "port": 4321
     }
   ]
 }

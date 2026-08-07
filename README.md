@@ -1,78 +1,87 @@
-# Restaurante do Vovó — Website
+# Restaurante do Vovó — site
 
-Site do Restaurante do Vovó em Pontal do Paraná. **Sem dependências, sem build — arquivo único para editar.**
+Site de uma página só. Sem programa de build, sem framework: são arquivos que o navegador abre direto.
+
+**No ar:** https://restaurante-do-vovo.vercel.app
+**Código:** https://github.com/morettilunajob-ux/Restaurante-do-vovo
 
 ---
 
-## Como Editar o Site
+## Como mudar o conteúdo do site
 
-**Tudo que você precisa mudar está em um arquivo: `js/dados.js`**
+Você só precisa mexer em **um arquivo**: `js/dados.js`
 
-Abra em qualquer editor de texto (Notepad, Word, VS Code, qualquer um) e procure por `[CONFIRMAR]` ou `[PLACEHOLDER]`.
+Abra ele em qualquer editor de texto (Bloco de Notas serve). Tudo que aparece no site está lá dentro. Depois de salvar e enviar para o GitHub, o site se atualiza sozinho em cerca de um minuto.
 
-### Cardápio
+**Regra de ouro:** só coloque informação confirmada. Preço errado no site queima a confiança de quem chega na porta.
 
-Procure por:
-```javascript
-cardapio: {
-  cafe: {
-    titulo: "Café da Manhã",
-    itens: [
-      { nome: "[PLACEHOLDER] Café com pão", preco: 5 },
-      { nome: "[PLACEHOLDER] Bolo caseiro", preco: 8 }
-    ]
-  },
-  almoco: {
-    titulo: "Almoço",
-    itens: [
-      { nome: "[PLACEHOLDER] Prato do dia", preco: 25 },
-      ...
-    ]
-  }
-}
-```
-
-**Para adicionar um prato:**
-1. Procure a categoria (Café da Manhã, Almoço, etc)
-2. Copie uma linha de prato
-3. Troque `nome` e `preco`
-4. Certifique de ter uma `,` no final de cada linha (menos a última)
-
-Exemplo:
-```javascript
-{ nome: "Moqueca de peixe", preco: 35 }
-```
-
-### Horários
-
-Procure por:
-```javascript
-horarios: [
-  { dia: "Segunda", aberto: "07:00", fechado: "15:00" },
-  ...
-]
-```
-
-Se o horário mudar, troque `aberto` ou `fechado`. Se fecha mais cedo, por exemplo:
-```javascript
-{ dia: "Quinta", aberto: "07:00", fechado: "14:30" }
-```
-
-Se fecha domingo, deixe como está. Se abre domingo diferente, troque `"FECHADO"` por um horário:
-```javascript
-{ dia: "Domingo", aberto: "11:00", fechado: "15:00" }
-```
-
-### Contato
+### Trocar telefone ou WhatsApp
 
 ```javascript
 telefone: "(41) 99835-1371",
 whatsapp: "5541998351371",
 ```
 
-Se mudar de número, troque os dois.
+O `whatsapp` vai sem parênteses, sem traço e sem espaço — começa com `55` (Brasil) e depois o DDD.
 
-### Endereço
+### Mudar horário
+
+```javascript
+horarios: [
+  { dia: "Segunda", abre: "07:00", fecha: "15:00" },
+  ...
+  { dia: "Domingo", abre: null,    fecha: null }
+],
+```
+
+- Para mudar o horário de um dia, troque `abre` e `fecha`.
+- Para marcar um dia como **fechado**, use `null` nos dois (sem aspas), como está no Domingo.
+
+O aviso "Aberto agora / Fechado" no topo do site se ajusta sozinho a partir dessa tabela. Ele usa o horário de Brasília, então funciona certo mesmo para quem acessa de outro estado.
+
+### Colocar o cardápio
+
+Hoje o site mostra um aviso dizendo que o cardápio vem em breve. Para trocar pelo cardápio de verdade:
+
+**Passo 1** — mude esta linha para `true`:
+
+```javascript
+cardapioPronto: true,
+```
+
+**Passo 2** — preencha os pratos:
+
+```javascript
+cardapio: {
+  almoco: {
+    titulo: "Almoço",
+    itens: [
+      {
+        nome: "Prato do dia",
+        descricao: "Arroz soltinho, feijão de panela de ferro, carne do dia e salada",
+        preco: 28,
+        destaque: true
+      },
+      {
+        nome: "Bife acebolado",
+        descricao: "Com arroz, feijão e batata frita",
+        preco: 32
+      }
+    ]
+  }
+}
+```
+
+Sobre cada campo:
+
+- **`nome`** — o nome do prato.
+- **`descricao`** — o que vem no prato. Vale caprichar: "feijão de panela de ferro" vende mais que "feijão". Descreva o que a pessoa vai sentir.
+- **`preco`** — só o número, com ponto se tiver centavos (`28` ou `28.50`). Não escreva "R$" nem vírgula — o site formata sozinho.
+- **`destaque`** — opcional. Coloque `destaque: true` no carro-chefe e ele ganha um selo "da casa".
+
+Atenção à pontuação: cada prato fica entre `{ }`, com vírgula depois — menos o último da lista.
+
+### Trocar o endereço
 
 ```javascript
 endereco: {
@@ -85,127 +94,63 @@ endereco: {
 }
 ```
 
-- `rua` e `numero`: nome e número da rua
-- `cep`: CEP do restaurante
-- `lat` e `lng`: deixe como está (coordenadas GPS, não precisa trocar)
+Troque `rua`, `numero` e `cep`. **Não mexa em `lat` e `lng`** — são as coordenadas que posicionam o mapa.
 
-### Avaliações
+### A frase da pimenta
 
 ```javascript
-avaliacoes: [
-  {
-    nota: 5,
-    texto: "Comida deliciosa, ambiente acolhedor. Tem pimenta em todas as mesas!",
-    autor: "Avaliação no Google"
-  },
-  ...
-]
+assinatura: "Tem pimenta em todas as mesas.",
 ```
 
-Deixe como está — vêm do Google Maps.
-
-### Fotos
-
-1. Crie uma pasta `img/` (já existe)
-2. Coloque suas fotos lá: `fachada.jpg`, `salao.jpg`, `prato1.jpg`, etc
-3. Avise o desenvolvedor para adicionar as fotos ao site
+É a frase grande que aparece logo abaixo do topo. Saiu das avaliações do Google — é o detalhe que os clientes mais lembram. Se quiser trocar, troque; mas ela é o que dá personalidade ao site.
 
 ---
 
-## Checklist — Antes de Ir ao Ar
+## O que ainda falta (pendente com o dono)
 
-- [ ] Cardápio completo e com preços reais
-- [ ] Endereço confirmado (rua, número, CEP)
-- [ ] Telefone e WhatsApp corretos
-- [ ] Horários atualizados (especialmente dias de encerramento)
-- [ ] Fotos reais (fachada, salão, pratos)
-- [ ] Redes sociais (Instagram, Facebook — se tiver)
-- [ ] Aprovação final do conteúdo
+- [ ] Cardápio real — pratos, descrições e preços
+- [ ] Fotos reais — fachada, salão e 4 a 6 pratos
+- [ ] Endereço completo — rua, número e CEP
+- [ ] Confirmar se aceita pedido ou reserva pelo WhatsApp
+- [ ] Confirmar se abre mesmo às 7h (café da manhã) ou só no almoço
+- [ ] Instagram, se existir
 
----
+### Sobre as fotos
 
-## Dados Confirmados com o Dono
+Coloque os arquivos na pasta `img/`. Vale mais uma foto de celular do prato de verdade do que foto bonita de banco de imagens: as avaliações elogiam justamente o lugar ser autêntico, e a pessoa percebe na hora quando a foto não bate com o que chega à mesa.
 
-- **Nome:** Restaurante do Vovó ✓
-- **Descrição:** Comida caseira, 5,0★, 12 avaliações ✓
-- **Localização:** Pontal do Paraná, PR ✓
-- **Ticket:** R$ 20–40 ✓
-- **Horários:** Seg–sab 7h–15h ✓
-- **Diferencial:** Pimenta em todas as mesas ✓
-
-**Pendentes:**
-- Cardápio exato
-- Fotos reais
-- Rua e número do endereço
-- Confirmar se abre domingo
+Dicas para fotografar sem equipamento: use luz do dia perto da janela (nunca o flash), fotografe de cima ou a 45 graus, e limpe a borda do prato antes.
 
 ---
 
-## Técnico (Para Quem Mexer com Código)
+## Para quem for mexer no código
 
-- **Stack:** HTML + CSS + JS estático
-- **Linguagem:** Português (Brasil)
-- **Fonte de dados:** `js/dados.js` (objeto único)
-- **Renderização:** `js/app.js` (inteligente, sem template engine)
-- **Estilo:** `css/estilo.css` (responsivo, dark mode automático)
-- **Mapa:** Leaflet (OpenStreetMap, lazy-loaded)
-- **SEO:** JSON-LD `Restaurant`, robots.txt, sitemap.xml
+**Arquivos**
 
-### Estrutura
+| Arquivo | O que faz |
+|---|---|
+| `index.html` | Estrutura da página. Não tem conteúdo escrito — tudo vem do `dados.js`. |
+| `css/estilo.css` | Todo o visual. É a única folha de estilo; não há `<style>` no HTML. |
+| `js/dados.js` | Fonte única de conteúdo. |
+| `js/app.js` | Renderiza a página a partir do `dados.js`, calcula o status e carrega o mapa. |
+| `vendor/leaflet.*` | Biblioteca do mapa, hospedada localmente (sem CDN, sem chave de API). |
 
-```
-.
-├─ index.html         (página única, semântica)
-├─ css/estilo.css     (responsivo, acessível)
-├─ js/dados.js        (fonte única de conteúdo)
-├─ js/app.js          (renderização e status)
-├─ img/               (fotos do restaurante)
-├─ vendor/            (Leaflet: leaflet.js, leaflet.css)
-├─ robots.txt         (SEO)
-├─ sitemap.xml        (SEO)
-└─ README.md          (este arquivo)
+**Decisões que valem manter**
+
+- **O status usa `Intl.DateTimeFormat` fixado em `America/Sao_Paulo`**, nunca o relógio do visitante. É a funcionalidade mais útil da página; se errar, é pior do que não existir. Atualiza a cada 60 segundos.
+- **O mapa (Leaflet, ~140 KB) só carrega quando a seção se aproxima da tela**, via `IntersectionObserver`. Não mover para o carregamento inicial.
+- **O JSON-LD não declara `aggregateRating`.** As 12 avaliações são do Google, não do site. Marcá-las como próprias viola as diretrizes de dados estruturados e pode gerar penalidade manual. A nota aparece na tela com a fonte declarada — só não vai no schema.
+- **Os preços aparecem junto da descrição, sem "R$" e sem coluna alinhada à direita.** Coluna de preços faz a pessoa comparar por preço; preço embutido na descrição a faz escolher por vontade.
+- **Nada de número sem fonte.** Se o dado não veio do restaurante ou do Google, não entra na página.
+
+**Rodar localmente**
+
+```bash
+npx http-server . -p 4321 -c-1
 ```
 
-### Funcionalidades Implementadas
+**Publicar**
 
-1. **Status ao vivo** — "Aberto agora" / "Fechado" com fuso São Paulo
-2. **Cardápio renderizado** — gerado de `dados.js`, sem HTML hardcode
-3. **Avaliações do Google** — 5,0★, 12 reviews (visual apenas, não JSON-LD)
-4. **Mapa Leaflet** — OpenStreetMap, lazy-loaded, sem API key
-5. **Barra fixa mobile** — Ligar · WhatsApp · Como chegar sempre visível
-6. **Dark mode** — automático conforme sistema do usuário
-7. **Acessibilidade** — WCAG AA, `prefers-reduced-motion`
-8. **SEO** — Open Graph, JSON-LD, robots.txt, sitemap.xml
+O deploy é automático: todo push na branch `main` do GitHub gera um novo deploy na Vercel.
 
-### Segurança
-
-- Sem dependências externas (exceto Leaflet no vendor)
-- Dados locais, sem requisições a APIs
-- Sem autenticação, sem banco de dados
-- Sem cookies de rastreamento
-- LGPD-compliant
-
----
-
-## Deploy
-
-Quando pronto:
-
-1. Registre um domínio `.com.br` em https://registro.br
-2. Configure DNS apontando para Vercel (ou outro host estático)
-3. Desenvolvedora faz deploy com `vercel deploy`
-
-Até lá, o site fica em `restaurantedovovo.vercel.app` (funcional 100%).
-
----
-
-## Suporte
-
-Dúvidas sobre edição: Pergunte ao desenvolvedor.
-
-Dúvidas sobre o restaurante (cardápio, horários, delivery, etc.): Entre em contato direto com o restaurante.
-
----
-
-**Última atualização:** Janeiro 2025  
-**Status:** Pronto para edição
+O domínio `.com.br` precisa ser registrado pessoalmente no [registro.br](https://registro.br) (exige CPF/CNPJ e pagamento). Até lá o site fica no endereço da Vercel, funcionando normalmente.
