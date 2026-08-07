@@ -576,13 +576,19 @@ section {
    MOVIMENTO — poucos momentos, deliberados
    ============================================================ */
 
+/* O conteúdo é visível por padrão. A animação só é ligada depois que
+   o JS confirma que consegue revelá-la — assim uma falha de script
+   nunca deixa um bloco invisível. */
 .entra {
-  opacity: 0;
-  translate: 0 1.25rem;
   transition: opacity .7s var(--curva), translate .7s var(--curva);
 }
 
-.entra.visivel {
+.js-anima .entra {
+  opacity: 0;
+  translate: 0 1.25rem;
+}
+
+.js-anima .entra.visivel {
   opacity: 1;
   translate: 0 0;
 }

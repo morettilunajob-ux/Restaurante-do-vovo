@@ -318,26 +318,61 @@
     document.body.appendChild(js);
   }
 
+  /* ---------- Disparar algo quando o elemento chega perto da tela ----------
+     Usa IntersectionObserver quando existe, mas mantém um plano B por
+     evento de rolagem: se o observer não disparar por qualquer motivo,
+     o conteúdo ainda aparece e o mapa ainda carrega. */
+
+  function quandoVisivel(el, acao, margem) {
+    margem = margem || 0;
+    var feito = false;
+    var io = null;
+
+    function perto() {
+      var r = el.getBoundingClientRect();
+      return r.top < window.innerHeight + margem && r.bottom > -margem;
+    }
+
+    function limpar() {
+      window.removeEventListener('scroll', aoRolar);
+      window.removeEventListener('resize', aoRolar);
+      if (io) io.disconnect();
+    }
+
+    function disparar() {
+      if (feito) return;
+      feito = true;
+      limpar();
+      acao();
+    }
+
+    function aoRolar() { if (perto()) disparar(); }
+
+    if ('IntersectionObserver' in window) {
+      io = new IntersectionObserver(function (entradas) {
+        if (entradas[0].isIntersecting) disparar();
+      }, { rootMargin: margem + 'px' });
+      io.observe(el);
+    }
+
+    window.addEventListener('scroll', aoRolar, { passive: true });
+    window.addEventListener('resize', aoRolar);
+    aoRolar();
+  }
+
   /* ---------- Entrada dos blocos ao rolar ---------- */
 
   function observarEntrada() {
-    var alvos = document.querySelectorAll('.entra');
+    /* Só esconde o que será revelado depois de garantir que há como
+       revelar. Sem esta classe, o CSS deixa tudo visível. */
+    document.documentElement.classList.add('js-anima');
 
-    if (!('IntersectionObserver' in window)) {
-      alvos.forEach(function (el) { el.classList.add('visivel'); });
-      return;
-    }
-
-    var obs = new IntersectionObserver(function (entradas) {
-      entradas.forEach(function (e) {
-        if (e.isIntersecting) {
-          e.target.classList.add('visivel');
-          obs.unobserve(e.target);
-        }
-      });
-    }, { rootMargin: '0px 0px -10% 0px' });
-
-    alvos.forEach(function (el) { obs.observe(el); });
+    Array.prototype.forEach.call(
+      document.querySelectorAll('.entra'),
+      function (el) {
+        quandoVisivel(el, function () { el.classList.add('visivel'); });
+      }
+    );
   }
 
   /* ---------- Início ---------- */
@@ -357,15 +392,6 @@
 
     /* Leaflet só entra quando a seção do mapa se aproxima (~140 KB) */
     var mapa = $('mapa');
-    if (mapa && 'IntersectionObserver' in window) {
-      new IntersectionObserver(function (entradas, obs) {
-        if (entradas[0].isIntersecting) {
-          carregarMapa();
-          obs.disconnect();
-        }
-      }, { rootMargin: '300px' }).observe(mapa);
-    } else {
-      carregarMapa();
-    }
+    if (mapa) quandoVisivel(mapa, carregarMapa, 300);
   });
 })();
