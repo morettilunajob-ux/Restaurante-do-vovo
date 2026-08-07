@@ -13,7 +13,7 @@ const DADOS = {
   descricao: "Comida caseira em Pontal do Paraná",
 
   /* A frase que ninguém esquece. Veio das avaliações do Google. */
-  assinatura: "Tem pimenta em todas as mesas.",
+  assinatura: "Pimenta em todas as mesas.",
 
   telefone: "(41) 99835-1371",
   whatsapp: "5541998351371",
