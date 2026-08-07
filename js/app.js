@@ -15,6 +15,15 @@
 
   function texto(el, valor) { if (el) el.textContent = valor; }
 
+  /* O HTML já vem com conteúdo estático (para quem chega sem JS e
+     para buscadores). O JS assume esse conteúdo a partir daqui —
+     limpa o que já está lá antes de reconstruir a partir de
+     dados.js, para nunca duplicar. */
+  function limpar(el) {
+    if (!el) return;
+    while (el.firstChild) el.removeChild(el.firstChild);
+  }
+
   /* Hora atual no fuso de São Paulo — nunca o relógio do
      visitante, que pode estar em outro fuso ou errado. */
   function agoraEmSaoPaulo() {
@@ -135,6 +144,7 @@
   function pintarAssinatura() {
     var el = $('assinatura');
     if (!el || !DADOS.assinatura) return;
+    limpar(el);
 
     /* Destaca a palavra "pimenta" sem usar innerHTML */
     var partes = DADOS.assinatura.split(/(pimenta)/i);
@@ -160,6 +170,7 @@
 
     var alvo = $('depoimentos');
     if (!alvo) return;
+    limpar(alvo);
 
     DADOS.avaliacoes.forEach(function (av) {
       var fig = document.createElement('figure');
@@ -182,6 +193,7 @@
   function pintarCardapio() {
     var alvo = $('cardapio-conteudo');
     if (!alvo) return;
+    limpar(alvo);
 
     /* Sem pratos reais: aviso honesto, não pratos inventados. */
     if (!DADOS.cardapioPronto) {
@@ -248,6 +260,7 @@
   function pintarHorarios() {
     var alvo = $('horarios-lista');
     if (!alvo) return;
+    limpar(alvo);
 
     var hoje = agoraEmSaoPaulo().dia;
     var nomeHoje = horarioDoDia(hoje).dia;
@@ -278,15 +291,19 @@
   function pintarEndereco() {
     var e = DADOS.endereco;
     var completo = e.rua + ', ' + e.numero;
+    var linha2 = e.bairro
+      ? e.bairro + ' — ' + e.complemento + ' — ' + e.cep
+      : e.complemento;
 
     var el = $('endereco');
     if (el) {
+      limpar(el);
       el.appendChild(document.createTextNode(completo));
       el.appendChild(document.createElement('br'));
-      el.appendChild(document.createTextNode(e.complemento));
+      el.appendChild(document.createTextNode(linha2));
     }
 
-    texto($('rodape-endereco'), completo);
+    texto($('rodape-endereco'), completo + ' — ' + linha2);
   }
 
   /* ---------- Mapa (Leaflet sob demanda) ---------- */
@@ -305,14 +322,29 @@
     js.src = '/vendor/leaflet.js';
     js.onload = function () {
       var e = DADOS.endereco;
-      var mapa = L.map('mapa', { scrollWheelZoom: false }).setView([e.lat, e.lng], 16);
+      var mapa = L.map('mapa', { scrollWheelZoom: false }).setView([e.lat, e.lng], 17);
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap',
         maxZoom: 19
       }).addTo(mapa);
 
-      L.marker([e.lat, e.lng]).addTo(mapa)
+      /* Pin próprio (a pimenta da marca) no lugar do marcador azul
+         padrão — mesmo path do favicon.svg, já testado em 16–48px. */
+      var pinPimenta = L.divIcon({
+        className: 'pin-casa',
+        html:
+          '<svg viewBox="0 0 64 64" fill="currentColor" aria-hidden="true">' +
+          '<path d="M35 6C31 3 25 4 24 9C23.3 12.5 25.5 15 29 16C22 20 17 28 18 38' +
+          'C19 49 26 58 34 59.5C38 60.2 40.5 56 38.5 52.5C35.5 47 29.5 42 30 34' +
+          'C30.3 27.5 34.5 22.5 40 19.5C45 16.8 46.5 10.5 43 7C40.5 4.5 37.5 4.2 35 6Z"/>' +
+          '</svg>',
+        iconSize: [34, 34],
+        iconAnchor: [17, 34],
+        popupAnchor: [0, -30]
+      });
+
+      L.marker([e.lat, e.lng], { icon: pinPimenta }).addTo(mapa)
         .bindPopup(DADOS.nome);
     };
     document.body.appendChild(js);
@@ -333,7 +365,7 @@
       return r.top < window.innerHeight + margem && r.bottom > -margem;
     }
 
-    function limpar() {
+    function desligarOuvintes() {
       window.removeEventListener('scroll', aoRolar);
       window.removeEventListener('resize', aoRolar);
       if (io) io.disconnect();
@@ -342,7 +374,7 @@
     function disparar() {
       if (feito) return;
       feito = true;
-      limpar();
+      desligarOuvintes();
       acao();
     }
 

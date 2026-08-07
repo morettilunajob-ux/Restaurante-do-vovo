@@ -4,18 +4,30 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Restaurante do Vovô — Comida caseira em Pontal do Paraná</title>
-<meta name="description" content="Comida caseira em Pontal do Paraná. Aberto de segunda a sábado, das 7h às 15h. 5,0 estrelas no Google.">
+<meta name="description" content="Almoço e prato feito caseiro no bairro Monções, Pontal do Paraná. Aberto de segunda a sábado, 7h às 15h. 5,0 estrelas no Google (12 avaliações).">
 <meta name="theme-color" content="#B91C1C">
+<link rel="canonical" href="https://restaurante-do-vovo.vercel.app/">
 
-<meta property="og:type" content="website">
+<meta property="og:type" content="restaurant">
+<meta property="og:url" content="https://restaurante-do-vovo.vercel.app/">
+<meta property="og:site_name" content="Restaurante do Vovô">
 <meta property="og:title" content="Restaurante do Vovô — Pontal do Paraná">
-<meta property="og:description" content="Comida caseira em Pontal do Paraná. Segunda a sábado, 7h às 15h.">
+<meta property="og:description" content="Comida caseira no bairro Monções, Pontal do Paraná. Segunda a sábado, 7h às 15h. 5,0★ no Google.">
 <meta property="og:locale" content="pt_BR">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://restaurante-do-vovo.vercel.app/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Restaurante do Vovô — comida caseira em Pontal do Paraná, 5,0 estrelas no Google">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://restaurante-do-vovo.vercel.app/img/og.png">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@600;700&family=Inter:wght@400;500;600&display=swap">
+<meta name="geo.placename" content="Pontal do Paraná">
+<meta name="geo.region" content="BR-PR">
+<meta name="geo.position" content="-25.6454002;-48.4384731">
+<meta name="ICBM" content="-25.6454002, -48.4384731">
+
+<link rel="preload" href="/fonts/inter-variable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/crimson-text-700.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/css/estilo.css">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 </head>
@@ -50,7 +62,7 @@
 <!-- ===================== ASSINATURA ===================== -->
 <section class="assinatura">
   <div class="envolve">
-    <p class="assinatura__frase entra" id="assinatura"></p>
+    <p class="assinatura__frase entra" id="assinatura">Tem <em>pimenta</em> em todas as mesas.</p>
     <p class="assinatura__fonte">o que os clientes mais lembram</p>
   </div>
 </section>
@@ -61,12 +73,25 @@
     <span class="rotulo">O que dizem</span>
 
     <div class="nota">
-      <span class="nota__valor" id="nota-valor"></span>
-      <span class="nota__estrelas" id="nota-estrelas" aria-hidden="true"></span>
-      <span class="nota__fonte" id="nota-fonte"></span>
+      <span class="nota__valor" id="nota-valor">5,0</span>
+      <span class="nota__estrelas" id="nota-estrelas" aria-hidden="true">★★★★★</span>
+      <span class="nota__fonte" id="nota-fonte">12 avaliações no Google</span>
     </div>
 
-    <div class="depoimentos" id="depoimentos"></div>
+    <div class="depoimentos" id="depoimentos">
+      <figure class="depoimento entra">
+        <blockquote>“Comida deliciosa, ambiente acolhedor. Tem pimenta em todas as mesas!”</blockquote>
+        <figcaption>avaliação no Google</figcaption>
+      </figure>
+      <figure class="depoimento entra">
+        <blockquote>“Comida caseira de qualidade. Voltamos sempre.”</blockquote>
+        <figcaption>avaliação no Google</figcaption>
+      </figure>
+      <figure class="depoimento entra">
+        <blockquote>“Prato farto, preço justo. Recomendo!”</blockquote>
+        <figcaption>avaliação no Google</figcaption>
+      </figure>
+    </div>
   </div>
 </section>
 
@@ -75,7 +100,12 @@
   <div class="envolve">
     <span class="rotulo">Cardápio</span>
     <h2>O que sai da cozinha</h2>
-    <div id="cardapio-conteudo"></div>
+    <div id="cardapio-conteudo">
+      <div class="aviso">
+        <p>Ainda estamos organizando o cardápio completo. Ligue e pergunte o prato do dia.</p>
+        <a class="btn btn--contorno" href="tel:+5541998351371">Ligar para (41) 99835-1371</a>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -84,7 +114,15 @@
   <div class="envolve">
     <span class="rotulo">Horários</span>
     <h2>Quando abrimos</h2>
-    <div class="horarios" id="horarios-lista"></div>
+    <div class="horarios" id="horarios-lista">
+      <div class="horario"><span class="horario__dia">Segunda</span><span>7h – 15h</span></div>
+      <div class="horario"><span class="horario__dia">Terça</span><span>7h – 15h</span></div>
+      <div class="horario"><span class="horario__dia">Quarta</span><span>7h – 15h</span></div>
+      <div class="horario"><span class="horario__dia">Quinta</span><span>7h – 15h</span></div>
+      <div class="horario"><span class="horario__dia">Sexta</span><span>7h – 15h</span></div>
+      <div class="horario"><span class="horario__dia">Sábado</span><span>7h – 15h</span></div>
+      <div class="horario horario--fechado"><span class="horario__dia">Domingo</span><span>Fechado</span></div>
+    </div>
   </div>
 </section>
 
@@ -94,14 +132,17 @@
     <span class="rotulo">Onde estamos</span>
     <h2>Como chegar</h2>
 
-    <address id="endereco"></address>
+    <address id="endereco">Av. Leste, Rua das Monções, 92<br>Monções — Pontal do Paraná, PR — 83255-000</address>
 
     <div class="acoes">
       <a class="btn btn--contorno" id="link-gmaps" target="_blank" rel="noopener">Abrir no Google Maps</a>
       <a class="btn btn--contorno" id="link-waze" target="_blank" rel="noopener">Abrir no Waze</a>
     </div>
 
-    <div class="mapa" id="mapa" role="img" aria-label="Mapa com a localização do restaurante em Pontal do Paraná"></div>
+    <div class="mapa-caixa">
+      <div class="mapa" id="mapa" role="img" aria-label="Mapa com a localização do restaurante em Pontal do Paraná"></div>
+      <p class="mapa-legenda">Posição aproximada pelo CEP — confirmando o ponto exato.</p>
+    </div>
   </div>
 </section>
 
@@ -110,10 +151,10 @@
   <div class="envolve">
     <p class="rodape__nome">Restaurante do Vovô</p>
     <p>
-      <a id="rodape-telefone" href="#"></a> ·
+      <a id="rodape-telefone" href="tel:+5541998351371">(41) 99835-1371</a> ·
       <a id="rodape-whatsapp" href="#" target="_blank" rel="noopener">WhatsApp</a>
     </p>
-    <p id="rodape-endereco"></p>
+    <p id="rodape-endereco">Av. Leste, Rua das Monções, 92 — Monções — Pontal do Paraná, PR — 83255-000</p>
     <p class="rodape__legal">Pontal do Paraná, Paraná</p>
   </div>
 </footer>
@@ -140,20 +181,26 @@
   "@type": "Restaurant",
   "name": "Restaurante do Vovô",
   "description": "Comida caseira em Pontal do Paraná",
+  "image": "https://restaurante-do-vovo.vercel.app/img/og.png",
+  "url": "https://restaurante-do-vovo.vercel.app/",
   "servesCuisine": "Brasileira",
   "priceRange": "R$20-40",
   "telephone": "+5541998351371",
   "address": {
     "@type": "PostalAddress",
+    "streetAddress": "Av. Leste, Rua das Monções, 92",
     "addressLocality": "Pontal do Paraná",
     "addressRegion": "PR",
+    "postalCode": "83255-000",
     "addressCountry": "BR"
   },
   "geo": {
     "@type": "GeoCoordinates",
-    "latitude": -25.7112159,
-    "longitude": -48.4796936
+    "latitude": -25.6454002,
+    "longitude": -48.4384731
   },
+  "areaServed": "Pontal do Paraná",
+  "hasMap": "https://www.google.com/maps/search/?api=1&query=-25.6454002,-48.4384731",
   "openingHoursSpecification": [{
     "@type": "OpeningHoursSpecification",
     "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],

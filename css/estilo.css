@@ -3,6 +3,39 @@
    Folha de estilo única. Não há <style> no HTML.
    ============================================================ */
 
+/* Fontes hospedadas localmente — nada vem de fonts.gstatic.com.
+   Evita o bloqueio de renderização do @import externo, remove dois
+   lookups de DNS e a dependência de terceiro que a LGPD desaconselha.
+   Cobrem só o subset "latin", que inclui todos os acentos do
+   português (ã, õ, ç, á, é, í, ó, ú, â, ê). */
+
+@font-face {
+  font-family: 'Crimson Text';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/crimson-text-600.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122;
+}
+
+@font-face {
+  font-family: 'Crimson Text';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/crimson-text-700.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url('/fonts/inter-variable.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122;
+}
+
 /* ---------- TOKENS ---------- */
 
 :root {
@@ -479,16 +512,76 @@ section {
 
 .local .acoes { margin-top: 1.75rem; }
 
-.mapa {
+.mapa-caixa {
   margin-top: 2.5rem;
+}
+
+.mapa {
   height: clamp(18rem, 45vh, 26rem);
   border-radius: 16px;
   overflow: hidden;
   background: var(--linha);
   box-shadow: var(--sombra-1);
+  border: 1px solid var(--linha);
+}
+
+.mapa-legenda {
+  margin-top: .75rem;
+  font-size: .85rem;
+  color: var(--tinta-fraca);
 }
 
 .leaflet-container { font-family: var(--corpo) !important; }
+
+/* Aproxima os tiles da paleta quente do site em vez de deixar o
+   cinza/azul default do OpenStreetMap brigando com o creme e o
+   vermelho. A atribuição do OSM continua visível — é exigência de
+   licença, não é opcional. */
+.mapa .leaflet-tile-pane {
+  filter: sepia(.18) saturate(.75) hue-rotate(-6deg) brightness(1.03) contrast(.97);
+}
+
+/* Pin próprio no lugar do marcador azul padrão do Leaflet */
+.pin-casa {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--vermelho);
+  border: 2px solid var(--creme);
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  box-shadow: var(--sombra-2);
+}
+
+.pin-casa svg {
+  width: 16px;
+  height: 16px;
+  transform: rotate(45deg);
+  color: var(--creme);
+}
+
+/* Controles de zoom na paleta da casa em vez do cinza default */
+.mapa .leaflet-control-zoom a {
+  background: var(--creme) !important;
+  color: var(--vermelho) !important;
+  border-color: var(--linha) !important;
+}
+
+.mapa .leaflet-control-zoom a:hover {
+  background: var(--creme-fundo) !important;
+}
+
+.mapa .leaflet-popup-content-wrapper {
+  border-radius: 10px;
+  font-family: var(--corpo);
+}
+
+.mapa .leaflet-popup-content {
+  font-weight: 600;
+  color: var(--tinta);
+}
 
 /* ============================================================
    RODAPÉ
@@ -536,7 +629,7 @@ section {
   inset-inline: .75rem;
   bottom: max(.75rem, env(safe-area-inset-bottom));
   padding: .35rem;
-  gap: .25rem;
+  gap: .5rem;
   border-radius: 999px;
   background: rgba(253, 251, 247, .82);
   border: 1px solid rgba(255, 255, 255, .6);

@@ -28,8 +28,15 @@ const DADOS = {
     bairro: "Monções",
     complemento: "Pontal do Paraná, PR",
     cep: "83255-000",
-    lat: -25.7112159,
-    lng: -48.4796936
+    /* Coordenadas geocodificadas a partir do CEP (nível de bairro,
+       não do número exato) — o CEP existe no OpenStreetMap, a rua
+       ainda não. As coordenadas antigas (-25.71, -48.48) apontavam
+       para Praia de Leste, ~8 km de distância daqui: provavelmente
+       vinham de um endereço diferente usado antes deste ser
+       confirmado. Trocar por coordenadas exatas assim que possível
+       (abrir o local no Google Maps e copiar de "compartilhar"). */
+    lat: -25.6454002,
+    lng: -48.4384731
   },
 
   /* Nota do Google. NÃO é avaliação do site — por isso não vai
@@ -61,7 +68,7 @@ const DADOS = {
      --------------------------------------------------------- */
   cardapioPronto: false,
 
-  cardapioAviso: "Cardápio completo em breve. Ligue para saber o prato do dia.",
+  cardapioAviso: "Ainda estamos organizando o cardápio completo. Ligue e pergunte o prato do dia.",
 
   cardapio: {
     almoco: {
