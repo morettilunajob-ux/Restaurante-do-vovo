@@ -1,5 +1,5 @@
 /* ============================================================
-   RESTAURANTE DO VOVÓ — FONTE ÚNICA DE CONTEÚDO
+   RESTAURANTE DO VOVÔ — FONTE ÚNICA DE CONTEÚDO
    ------------------------------------------------------------
    Este é o único arquivo que precisa ser editado para mudar
    o conteúdo do site. Instruções completas no README.md.
@@ -9,7 +9,7 @@
    ============================================================ */
 
 const DADOS = {
-  nome: "Restaurante do Vovó",
+  nome: "Restaurante do Vovô",
   descricao: "Comida caseira em Pontal do Paraná",
 
   /* A frase que ninguém esquece. Veio das avaliações do Google. */
@@ -23,10 +23,11 @@ const DADOS = {
   whatsappMensagem: "Olá! Vocês estão abertos hoje?",
 
   endereco: {
-    rua: "Rua [CONFIRMAR]",
-    numero: "[CONFIRMAR]",
+    rua: "Av. Leste, Rua das Monções",
+    numero: "92",
+    bairro: "Monções",
     complemento: "Pontal do Paraná, PR",
-    cep: "[CONFIRMAR]",
+    cep: "83255-000",
     lat: -25.7112159,
     lng: -48.4796936
   },

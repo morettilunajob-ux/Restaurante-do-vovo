@@ -1,5 +1,5 @@
 /* ============================================================
-   RESTAURANTE DO VOVÓ
+   RESTAURANTE DO VOVÔ
    Folha de estilo única. Não há <style> no HTML.
    ============================================================ */
 
@@ -22,8 +22,9 @@
   --linha:      #E7E0D5;
 
   /* Estado */
-  --aberto:     #15803D;
-  --aberto-bg:  #DCFCE7;
+  --aberto:        #15803D;
+  --aberto-bg:     #DCFCE7;
+  --aberto-escuro: #14532D;
 
   /* Tipografia */
   --display: 'Crimson Text', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
@@ -120,38 +121,41 @@ section {
    HERO
    ============================================================ */
 
+/* Toalha de mesa quadriculada — vernacular real de restaurante de
+   prato feito no Brasil. Três tons por sobreposição de faixas
+   translúcidas: creme puro onde não cruzam, vermelho médio onde uma
+   cruza, vermelho escuro onde as duas se cruzam. */
 .hero {
   position: relative;
-  background: linear-gradient(160deg, var(--vermelho) 0%, var(--vermelho-escuro) 100%);
-  color: var(--creme);
-  overflow: hidden;
+  background-color: var(--creme);
+  background-image:
+    repeating-linear-gradient(90deg, rgba(185, 28, 28, .55) 0 20px, transparent 20px 40px),
+    repeating-linear-gradient(0deg,  rgba(185, 28, 28, .55) 0 20px, transparent 20px 40px);
   padding-block: clamp(3.5rem, 12vw, 6.5rem);
-}
-
-/* Motivo da pimenta — marca d'água única, discreta */
-.hero__pimenta {
-  position: absolute;
-  right: -6%;
-  top: 50%;
-  translate: 0 -50%;
-  width: min(46%, 26rem);
-  height: auto;
-  opacity: .07;
-  color: var(--creme);
-  pointer-events: none;
 }
 
 .hero .envolve { position: relative; z-index: 1; }
 
+/* A "mesa posta": painel opaco onde o conteúdo se apoia, como a
+   comanda sobre a toalha. É o que mantém o texto legível sobre um
+   fundo padronizado. */
+.hero__mesa {
+  background: var(--creme);
+  border-radius: 18px;
+  padding: clamp(1.75rem, 6vw, 3rem) clamp(1.5rem, 5vw, 2.75rem);
+  max-width: 34rem;
+  box-shadow: var(--sombra-2);
+}
+
 .hero h1 {
-  color: var(--creme);
+  color: var(--tinta);
   max-width: 12ch;
 }
 
 .hero__sub {
   margin-top: 1rem;
   font-size: clamp(1.05rem, 2.5vw, 1.3rem);
-  color: rgba(253, 251, 247, .82);
+  color: var(--tinta-media);
   max-width: 32ch;
 }
 
@@ -167,11 +171,7 @@ section {
   font-size: .95rem;
   font-weight: 600;
   letter-spacing: -.005em;
-  background: rgba(255, 255, 255, .13);
-  border: 1px solid rgba(255, 255, 255, .22);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .25);
+  border: 1px solid transparent;
 }
 
 .status__ponto {
@@ -183,25 +183,27 @@ section {
 }
 
 .status--aberto {
-  background: rgba(74, 222, 128, .2);
-  border-color: rgba(134, 239, 172, .45);
-  color: #DCFCE7;
+  background: var(--aberto-bg);
+  border-color: rgba(21, 128, 61, .25);
+  color: var(--aberto-escuro);
 }
 
 .status--aberto .status__ponto {
-  background: #4ADE80;
-  box-shadow: 0 0 0 0 rgba(74, 222, 128, .6);
+  background: var(--aberto);
+  box-shadow: 0 0 0 0 rgba(21, 128, 61, .45);
   animation: pulso 2.4s var(--curva) infinite;
 }
 
 @keyframes pulso {
-  0%   { box-shadow: 0 0 0 0 rgba(74, 222, 128, .55); }
-  70%  { box-shadow: 0 0 0 .5rem rgba(74, 222, 128, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+  0%   { box-shadow: 0 0 0 0 rgba(21, 128, 61, .45); }
+  70%  { box-shadow: 0 0 0 .5rem rgba(21, 128, 61, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(21, 128, 61, 0); }
 }
 
 .status--fechado {
-  color: rgba(253, 251, 247, .9);
+  background: var(--creme-fundo);
+  border-color: var(--linha);
+  color: var(--tinta-media);
 }
 
 /* ---------- Botões ---------- */
@@ -237,22 +239,19 @@ section {
 .btn:active { transform: scale(.97); }
 
 .btn--principal {
-  background: var(--creme);
-  color: var(--vermelho);
-  box-shadow: var(--sombra-2), inset 0 1px 0 rgba(255, 255, 255, .7);
+  background: var(--vermelho);
+  color: var(--creme);
 }
 
-.btn--principal:hover { background: #fff; }
+.btn--principal:hover { background: var(--vermelho-escuro); }
 
 .btn--fantasma {
-  background: rgba(255, 255, 255, .1);
-  border-color: rgba(255, 255, 255, .3);
-  color: var(--creme);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  background: var(--creme-fundo);
+  border-color: var(--linha);
+  color: var(--tinta);
 }
 
-.btn--fantasma:hover { background: rgba(255, 255, 255, .18); }
+.btn--fantasma:hover { background: #fff; }
 
 .btn--contorno {
   background: var(--creme);

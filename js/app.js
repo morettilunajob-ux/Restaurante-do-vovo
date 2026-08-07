@@ -1,5 +1,5 @@
 /* ============================================================
-   RESTAURANTE DO VOVÓ — renderização e comportamento
+   RESTAURANTE DO VOVÔ — renderização e comportamento
    Lê tudo de dados.js. Não há conteúdo escrito aqui.
    ============================================================ */
 

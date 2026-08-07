@@ -1,4 +1,4 @@
-# Restaurante do Vovó — site
+# Restaurante do Vovô — site
 
 Site de uma página só. Sem programa de build, sem framework: são arquivos que o navegador abre direto.
 
