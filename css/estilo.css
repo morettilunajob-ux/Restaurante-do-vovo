@@ -147,6 +147,17 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--text-primary);
 }
 
+/* Smooth Interactions */
+button, a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+input, textarea, select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
 h1 {
   font-size: var(--text-6xl);
   letter-spacing: var(--ls-tight);

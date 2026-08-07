@@ -3,131 +3,442 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Restaurante do Vovó — Comida caseira em Pontal do Paraná. Aberto de seg-sab 7h-15h.">
-  <meta name="theme-color" content="#8b5a3c">
-
-  <!-- Open Graph -->
-  <meta property="og:title" content="Restaurante do Vovó — Pontal do Paraná">
-  <meta property="og:description" content="Comida caseira de qualidade. Almoço farto e bem temperado.">
-  <meta property="og:url" content="https://restaurantedovovo.com">
-  <meta property="og:type" content="business.business">
-  <meta name="twitter:card" content="summary_large_image">
-
-  <title>Restaurante do Vovó — Pontal do Paraná</title>
+  <meta name="description" content="Restaurante do Vovó — Comida caseira premium em Pontal do Paraná">
+  <title>Restaurante do Vovó — Comida Caseira Premium</title>
   <link rel="stylesheet" href="/css/estilo.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='85' font-size='90' fill='%238b5a3c'>🍽️</text></svg>">
+  <style>
+    /* Animações Avançadas */
+    @keyframes slideInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .fade-in { animation: fadeIn 0.6s ease-out; }
+    .slide-in { animation: slideInUp 0.8s ease-out; }
+    .scale-in { animation: scaleIn 0.6s ease-out; }
+    .float { animation: float 3s ease-in-out infinite; }
+
+    /* Glassmorphism Premium */
+    .glass {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 16px;
+    }
+
+    /* Gradient Text */
+    .gradient-text {
+      background: linear-gradient(135deg, #B91C1C 0%, #F59E0B 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Scroll Reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s ease-out;
+    }
+
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Button Ripple Effect */
+    .ripple {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ripple::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.5);
+      transform: translate(-50%, -50%);
+      animation: ripple-animate 0.6s ease-out;
+    }
+
+    @keyframes ripple-animate {
+      to {
+        width: 300px;
+        height: 300px;
+        opacity: 0;
+      }
+    }
+
+    /* Counter Animation */
+    .counter {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #B91C1C;
+    }
+
+    /* Hover Effects */
+    .hover-lift {
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .hover-lift:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 50px rgba(185, 28, 28, 0.3);
+    }
+
+    /* Smooth Scroll */
+    scroll-behavior: smooth;
+  </style>
 </head>
 <body>
-  <header>
-    <h1>Restaurante do Vovó</h1>
-    <p>Comida caseira em Pontal do Paraná</p>
-    <div class="status" id="status-badge">Carregando...</div>
 
-    <div class="ctas">
-      <a class="btn btn-whatsapp" data-href="whatsapp" target="_blank" rel="noopener">
-        💬 WhatsApp
-      </a>
-      <a class="btn btn-mapa" data-href="mapa" target="_blank" rel="noopener">
-        📍 Como chegar
-      </a>
+<!-- ===== HEADER / HERO ===== -->
+<header class="fade-in">
+  <div class="header-content">
+    <h1 class="slide-in">Restaurante do Vovó</h1>
+    <p class="slide-in" style="animation-delay: 0.1s;">Comida caseira que alimenta a alma</p>
+
+    <div class="status" id="status-badge" class="slide-in" style="animation-delay: 0.2s;">
+      Carregando...
     </div>
-  </header>
 
-  <main>
-    <!-- CARDÁPIO -->
-    <section id="cardapio">
-      <h2>Cardápio</h2>
-      <div id="cardapio-conteudo">
-        <p style="text-align: center; color: #999;">Carregando cardápio...</p>
+    <div class="ctas slide-in" style="animation-delay: 0.3s;">
+      <button class="btn btn-whatsapp ripple" onclick="openWhatsApp()">
+        💬 WhatsApp
+      </button>
+      <button class="btn btn-mapa ripple" onclick="scrollToMap()">
+        📍 Como Chegar
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- ===== STATS ===== -->
+  <section class="reveal" style="padding: 5rem 3rem; text-align: center;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;">
+      <div class="glass hover-lift" style="padding: 2rem; border-radius: 16px;">
+        <div class="counter" data-target="5">5</div>
+        <p style="color: #666; margin-top: 0.5rem; font-weight: 600;">Estrelas no Google</p>
       </div>
-    </section>
-
-    <!-- AVALIAÇÕES -->
-    <section id="avaliacoes">
-      <h2>O Que Dizem</h2>
-      <p style="text-align: center; font-size: 1.3rem; color: #f39c12; margin-bottom: 1rem;">
-        ★★★★★ 5.0 de 5 (12 avaliações no Google)
-      </p>
-      <div id="avaliacoes-conteudo" class="avaliacoes-container">
-        <p style="text-align: center; color: #999;">Carregando avaliações...</p>
+      <div class="glass hover-lift" style="padding: 2rem; border-radius: 16px;">
+        <div class="counter" data-target="12">12</div>
+        <p style="color: #666; margin-top: 0.5rem; font-weight: 600;">Avaliações</p>
       </div>
-    </section>
-
-    <!-- HORÁRIOS -->
-    <section id="horarios">
-      <h2>Horários</h2>
-      <div id="horarios-conteudo">
-        <p style="text-align: center; color: #999;">Carregando horários...</p>
+      <div class="glass hover-lift" style="padding: 2rem; border-radius: 16px;">
+        <div class="counter" data-target="8">8</div>
+        <p style="color: #666; margin-top: 0.5rem; font-weight: 600;">Anos de Pedigree</p>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- LOCALIZAÇÃO -->
-    <section id="localizacao">
-      <h2>Localização</h2>
-      <p>Venha nos visitar!</p>
+  <!-- ===== CARDÁPIO ===== -->
+  <section id="cardapio" class="reveal">
+    <h2>Cardápio</h2>
+    <div id="cardapio-conteudo" style="display: grid; gap: 2rem;">
+      <!-- Preenchido por JavaScript -->
+    </div>
+  </section>
 
-      <address id="endereco-completo" style="font-style: normal; margin: 1rem 0;">
-        [Carregando endereço...]
-      </address>
+  <!-- ===== AVALIAÇÕES ===== -->
+  <section id="avaliacoes" class="reveal">
+    <h2>O Que Dizem</h2>
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <span style="font-size: 1.5rem; color: #F59E0B;">★★★★★</span>
+      <p style="color: #666; font-weight: 600;">5.0 de 5 (12 avaliações no Google)</p>
+    </div>
+    <div id="avaliacoes-conteudo" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+      <!-- Preenchido por JavaScript -->
+    </div>
+  </section>
 
-      <div class="endereco-info">
-        <a data-href="mapa" target="_blank" rel="noopener">Google Maps</a>
-        <a href="#" onclick="window.open(`https://waze.com/ul?ll=${DADOS.endereco.lat},${DADOS.endereco.lng}`); return false;">Waze</a>
-        <a id="telefone" href="#">Ligar</a>
+  <!-- ===== HORÁRIOS ===== -->
+  <section id="horarios" class="reveal">
+    <h2>Horários</h2>
+    <div id="horarios-conteudo" style="margin-top: 2rem;">
+      <!-- Preenchido por JavaScript -->
+    </div>
+  </section>
+
+  <!-- ===== LOCALIZAÇÃO ===== -->
+  <section id="localizacao" class="reveal">
+    <h2>Localização</h2>
+    <p style="margin-bottom: 2rem; font-size: 1.1rem;">Venha nos visitar e desfrutar de uma refeição memorável.</p>
+
+    <div id="endereco-completo" style="font-size: 1.1rem; font-weight: 500; margin: 1.5rem 0; line-height: 2;">
+      <!-- Preenchido por JavaScript -->
+    </div>
+
+    <div class="endereco-info" style="margin: 2rem 0;">
+      <button class="btn btn-primary ripple" onclick="openGoogleMaps()">Google Maps</button>
+      <button class="btn btn-primary ripple" onclick="openWaze()">Waze</button>
+      <button class="btn btn-primary ripple" onclick="callPhone()">Ligar</button>
+    </div>
+
+    <div id="mapa" style="margin: 2rem 0;"></div>
+  </section>
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer class="reveal">
+  <div style="margin-bottom: 1.5rem;">
+    <h3 style="color: #F59E0B; margin-bottom: 1rem;">Entre em Contato</h3>
+    <p><strong>Telefone:</strong> <a href="tel:" id="telefone" style="color: #F59E0B; font-weight: 600;"></a></p>
+    <p><strong>WhatsApp:</strong> <a href="#" onclick="openWhatsApp()" style="color: #F59E0B; font-weight: 600;">Envie uma mensagem</a></p>
+  </div>
+  <p style="opacity: 0.7; font-size: 0.9rem;">© 2025 Restaurante do Vovó — Pontal do Paraná, PR</p>
+</footer>
+
+<!-- ===== BARRA FIXA MOBILE ===== -->
+<nav class="barra-fixa" style="display: none;">
+  <a href="tel:" onclick="callPhone()">📞 Ligar</a>
+  <a href="#" onclick="openWhatsApp()">💬 WhatsApp</a>
+  <a href="#" onclick="scrollToMap()">📍 Mapa</a>
+</nav>
+
+<!-- JSON-LD -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Restaurant",
+  "name": "Restaurante do Vovó",
+  "description": "Comida caseira em Pontal do Paraná",
+  "url": "https://restaurante-do-vovo.vercel.app",
+  "servesCuisine": ["Brazilian"],
+  "priceRange": "$$",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Pontal do Paraná",
+    "addressRegion": "PR",
+    "addressCountry": "BR"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": -25.7112159,
+    "longitude": -48.4796936
+  },
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+      "opens": "07:00",
+      "closes": "15:00"
+    }
+  ],
+  "acceptsReservations": false
+}
+</script>
+
+<!-- ===== SCRIPTS ===== -->
+<script src="/js/dados.js"></script>
+<script>
+  // Renderizar conteúdo dinâmico
+  function renderizar() {
+    // Status ao vivo
+    const status = calcularStatusAberto();
+    document.getElementById('status-badge').textContent = status.mensagem;
+    document.getElementById('status-badge').className = 'status slide-in ' + (status.aberto ? 'aberto' : 'fechado');
+
+    // Cardápio
+    let cardapioHTML = '';
+    for (const [chave, categoria] of Object.entries(DADOS.cardapio)) {
+      cardapioHTML += `
+        <div class="cardapio-categoria hover-lift">
+          <h3>${categoria.titulo}</h3>
+          ${categoria.itens.map(item => `
+            <div class="cardapio-item">
+              <span class="cardapio-nome">${item.nome}</span>
+              <span class="cardapio-preco">R$ ${item.preco.toFixed(2).replace('.', ',')}</span>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+    document.getElementById('cardapio-conteudo').innerHTML = cardapioHTML;
+
+    // Avaliações
+    document.getElementById('avaliacoes-conteudo').innerHTML = DADOS.avaliacoes.map((av, idx) => `
+      <div class="avaliacao-card glass hover-lift" style="animation-delay: ${idx * 0.1}s;" class="scale-in">
+        <div class="avaliacao-nota">${'★'.repeat(av.nota)}</div>
+        <p class="avaliacao-texto">"${av.texto}"</p>
+        <p class="avaliacao-autor">— ${av.autor}</p>
       </div>
+    `).join('');
 
-      <div id="mapa"></div>
-    </section>
-  </main>
+    // Horários
+    const formatter = new Intl.DateTimeFormat('pt-BR', {
+      timeZone: 'America/Sao_Paulo',
+      weekday: 'long'
+    });
+    const hoje = formatter.format(new Date()).toLowerCase();
 
-  <footer>
-    <p>
-      <strong>Restaurante do Vovó</strong><br>
-      <a href="tel:" id="telefone" style="color: #fff; text-decoration: underline;">Telefone</a> •
-      <a href="#" data-href="whatsapp" style="color: #fff; text-decoration: underline;" target="_blank" rel="noopener">WhatsApp</a>
-    </p>
-    <p style="font-size: 0.85rem; margin-top: 1rem; opacity: 0.9;">
-      © 2025 Restaurante do Vovó — Pontal do Paraná, PR
-    </p>
-  </footer>
+    let horariosHTML = `<table class="horarios-tabela">
+      <thead>
+        <tr><th>Dia</th><th>Horário</th></tr>
+      </thead>
+      <tbody>`;
 
-  <!-- JSON-LD Structured Data -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Restaurant",
-    "name": "Restaurante do Vovó",
-    "description": "Comida caseira em Pontal do Paraná",
-    "url": "https://restaurantedovovo.com",
-    "telephone": "[CONFIRMAR]",
-    "servesCuisine": ["Brazilian"],
-    "priceRange": "$$",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "[CONFIRMAR RUA]",
-      "addressLocality": "Pontal do Paraná",
-      "addressRegion": "PR",
-      "postalCode": "[CONFIRMAR]",
-      "addressCountry": "BR"
-    },
-    "geo": {
-      "@type": "GeoCoordinates",
-      "latitude": -25.7112159,
-      "longitude": -48.4796936
-    },
-    "openingHoursSpecification": [
-      {
-        "@type": "OpeningHoursSpecification",
-        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-        "opens": "07:00",
-        "closes": "15:00"
-      }
-    ],
-    "acceptsReservations": false
+    DADOS.horarios.forEach(h => {
+      const isHoje = h.dia.toLowerCase() === hoje;
+      const horario = h.aberto === "FECHADO" ? "Fechado" : `${h.aberto} – ${h.fechado}`;
+      horariosHTML += `
+        <tr ${isHoje ? 'class="hoje"' : ''}>
+          <td><strong>${h.dia}</strong></td>
+          <td>${horario}</td>
+        </tr>
+      `;
+    });
+
+    horariosHTML += `</tbody></table>`;
+    document.getElementById('horarios-conteudo').innerHTML = horariosHTML;
+
+    // Endereço
+    document.getElementById('endereco-completo').innerHTML = `
+      ${DADOS.endereco.rua}, ${DADOS.endereco.numero}<br>
+      ${DADOS.endereco.complemento}
+    `;
+
+    // Telefone
+    document.getElementById('telefone').href = `tel:${DADOS.telefone.replace(/\D/g, '')}`;
+    document.getElementById('telefone').textContent = DADOS.telefone;
   }
-  </script>
 
-  <script src="/js/dados.js"></script>
-  <script src="/js/app.js"></script>
+  // Scroll Reveal
+  function revealOnScroll() {
+    const reveals = document.querySelectorAll('.reveal');
+    reveals.forEach(el => {
+      const windowHeight = window.innerHeight;
+      const elementTop = el.getBoundingClientRect().top;
+      if (elementTop < windowHeight - 100) {
+        el.classList.add('active');
+      }
+    });
+  }
+
+  // Counter Animation
+  function animateCounter() {
+    const counters = document.querySelectorAll('.counter');
+    counters.forEach(counter => {
+      const target = parseInt(counter.getAttribute('data-target'));
+      let current = 0;
+      const increment = target / 30;
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+          counter.textContent = target;
+          clearInterval(timer);
+        } else {
+          counter.textContent = Math.floor(current);
+        }
+      }, 50);
+    });
+  }
+
+  // Botões de ação
+  function openWhatsApp() {
+    const msg = encodeURIComponent('Olá! Gostaria de saber mais sobre o Restaurante do Vovó.');
+    window.open(`https://wa.me/${DADOS.whatsapp}?text=${msg}`, '_blank');
+  }
+
+  function openGoogleMaps() {
+    window.open(`https://maps.google.com/?q=${DADOS.endereco.lat},${DADOS.endereco.lng}`, '_blank');
+  }
+
+  function openWaze() {
+    window.open(`https://waze.com/ul?ll=${DADOS.endereco.lat},${DADOS.endereco.lng}`, '_blank');
+  }
+
+  function callPhone() {
+    window.location.href = `tel:${DADOS.telefone.replace(/\D/g, '')}`;
+  }
+
+  function scrollToMap() {
+    document.getElementById('localizacao').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // Calcular status
+  function calcularStatusAberto() {
+    const agora = new Date();
+    const formatter = new Intl.DateTimeFormat('pt-BR', {
+      timeZone: 'America/Sao_Paulo',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+      weekday: 'long'
+    });
+
+    const partes = formatter.formatToParts(agora);
+    const hora = parseInt(partes.find(p => p.type === 'hour').value);
+    const minuto = parseInt(partes.find(p => p.type === 'minute').value);
+    const diaSemana = partes.find(p => p.type === 'weekday').value;
+
+    const agoras_minutos = hora * 60 + minuto;
+    const abre_minutos = 7 * 60;
+    const fecha_minutos = 15 * 60;
+
+    if (diaSemana === 'domingo') {
+      return { aberto: false, mensagem: 'Fechado · Abre segunda 7h' };
+    }
+
+    if (agoras_minutos >= abre_minutos && agoras_minutos < fecha_minutos) {
+      return { aberto: true, mensagem: `Aberto agora · Fecha 15h` };
+    } else if (agoras_minutos < abre_minutos) {
+      return { aberto: false, mensagem: 'Abre hoje 7h' };
+    } else {
+      return { aberto: false, mensagem: 'Abre amanhã 7h' };
+    }
+  }
+
+  // Barra fixa mobile
+  function toggleBarraFixa() {
+    const barraFixa = document.querySelector('.barra-fixa');
+    if (window.innerWidth <= 768) {
+      barraFixa.style.display = 'flex';
+    } else {
+      barraFixa.style.display = 'none';
+    }
+  }
+
+  // Inicializar
+  document.addEventListener('DOMContentLoaded', () => {
+    renderizar();
+    animateCounter();
+    revealOnScroll();
+    toggleBarraFixa();
+    window.addEventListener('scroll', revealOnScroll);
+    window.addEventListener('resize', toggleBarraFixa);
+  });
+
+  // Ripple effect
+  document.querySelectorAll('.ripple').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      const ripple = document.createElement('span');
+      ripple.style.position = 'absolute';
+      ripple.style.pointerEvents = 'none';
+      this.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 600);
+    });
+  });
+</script>
+
 </body>
 </html>
